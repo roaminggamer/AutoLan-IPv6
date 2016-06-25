@@ -16,9 +16,9 @@ In short, AutoLan was developed for an earlier version of Lua Sockets (2.0) and 
 
 Several experts worked on this and came up w/ solutions to the issue.  Those solutoins are provided here for future reference and posterity.
 
+* modules/ - Folder containing 'modified' server and client modules from AutoLan that should be (at least partially) fixed to work on ipv4 and ipv6.
+* pong demo/ - Modified version of scottrules44 changes (by RoamingGamer) to work equally on Corona versions before and after 2016.2833. (Auto-senses socket2 versus socket3)
 * pong demo 3.zip - Version of pong demo changed by scottrules44 to be ipv6 compliant.
-* pong demo - Modified version of scottrules44 changes (by RoamingGamer) to work equally on Corona versions before and after 2016.2833. (Auto-senses socket2 versus socket3)
-* modules - Folder containing 'modified' server and client modules from AutoLan that should be (at least partially) fixed to work on ipv4 and ipv6.
 
 
 Warning
