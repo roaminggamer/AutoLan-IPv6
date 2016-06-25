@@ -29,7 +29,7 @@ Warning
 Thanks To
 -------
 * MY Developers for original code
-* scottrules for code modes and 'pong demo' changes
+* scottrules44 for code modes and 'pong demo' changes
 * Joshua Quick for insights on socket.udp() versus socket.udp4() versus socket.udp6() and other coding insights.
 * Rob Miracle for his help on a separate slack channel.
 * ... everyone else who pitched in with ideas and insights.
