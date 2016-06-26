@@ -20,7 +20,6 @@ Several experts worked on this and came up w/ solutions to the issue.  Those sol
 * pong demo/ - Modified version of scottrules44 changes (by RoamingGamer) to work equally on Corona versions before and after 2016.2833. (Auto-senses socket2 versus socket3)
 * pong demo 3.zip - Version of pong demo changed by scottrules44 to be ipv6 compliant.
 
-
 Warning
 --------
 * If you are running Corona 2016.2833 (uses socket3) or later, you must run the pong demo on separate devices for it to work.  You can run both instances on the same machine for versions before that.
