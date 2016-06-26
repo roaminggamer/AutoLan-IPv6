@@ -13,6 +13,7 @@ print("Is Socket2", isSocket2)
 -----------------------------------------------------------------------------------------
 display.setStatusBar( display.HiddenStatusBar )
 -- forward declarations
+local title, titleText
 local up,down,left,right, paddleUp, paddleDown, ball, textUp, textDown, client, server, isClient, isServer, myPlayerID
 local serverReceived, clientReceived, dragBodyServer, dragBodyClient, ballCollision, sendFullFrame,sendFullFrameTimer, playerDropped, connectionAttemptFailed
 local screenW, screenH, halfW, halfH = display.contentWidth, display.contentHeight, display.contentWidth*0.5, display.contentHeight*0.5
@@ -34,34 +35,37 @@ local function upHit(e)
 	end
 end
 local function createScoreDisplay(group)
-	textUp = display.newText("Score: 0", 10, 0, native.systemFont, 16)
-	textUp:setTextColor(255)	
-	textDown = display.newText("Score: 0", 10, screenH-20, native.systemFont, 16)
-	textDown:setTextColor(255)		
+	textUp = display.newText(group,"Score: 0", 0, 10, native.systemFont, 16)
+	textUp.anchorY = 0
+	textUp.anchorX = 0
+	textUp:setFillColor(255)	
+	textDown = display.newText(group,"Score: 0", 10, screenH-20, native.systemFont, 16)
+	textDown:setFillColor(255)
+	textDown.anchorX = 0
+
 end
 local function createWalls(group)
 	--draw walls
-	up = display.newRect(group,0,-20,screenW, 20)
+	up = display.newRect(group,screenW*.5,0,screenW, 20)
 	physics.addBody( up, "static", { density=1.0, friction=0, bounce=0} )	
 	up:addEventListener("collision", upHit)
-	down = display.newRect(group,0,screenH,screenW, 20)
+	down = display.newRect(group,screenW*.5,screenH,screenW, 20)
 	physics.addBody( down, "static", { density=1.0, friction=0, bounce=0} )	
 	down:addEventListener("collision", downHit)	
-	left = display.newRect(group,-20,0,20, screenH)
+	left = display.newRect(group,-20,screenH*.5,20, screenH)
 	physics.addBody( left, "static", { density=1.0, friction=0, bounce=0} )	
-	right = display.newRect(group,screenW,0,20, screenH)
+	right = display.newRect(group,screenW+10,screenH*.5,20, screenH)
 	physics.addBody( right, "static", { density=1.0, friction=0, bounce=0} )
 end
 local function createPaddle(group, x, y, rotation)
 	local width, height = 120, 30
 	local paddle = display.newRoundedRect(group, 0, 0, width, height,10)
-	paddle:setReferencePoint(display.CenterReferencePoint)
 	paddle.x, paddle.y = x,y
 	local shape = {width*.5, -height*.5,	width*.5, height*.1,	width*.4, height*.5,-width*.4, height*.5,-width*.5, height*.1, -width*.5, -height*.5,}
 	physics.addBody( paddle, "dynamic", { density=1.0, friction=0, bounce=0, shape = shape} )	
 	paddle:rotate(180+rotation)
 	paddle.isFixedRotation = true
-	paddle:setFillColor(255,100,100)
+	paddle:setFillColor(1,.39215686274,.39215686274)
 	paddle.touchJoint = physics.newJoint( "touch", paddle, paddle.x, paddle.y )
 	paddle.targetX = x
 	function paddle:setTarget(x) 
@@ -75,14 +79,14 @@ local function createBall(group)
 	physics.addBody( puck, { density=0, friction=0.3, bounce=1, radius = 20} )
 	puck.isBullet = true
 	puck:setLinearVelocity(200,200)
-	puck:setFillColor(100,255,100)
+	puck:setFillColor(.39215686274,1,.39215686274)
 	group:insert(puck)
 	return puck
 end
 
 local function makeClient()
 	if(isServer) then --if we were a server before, we need to unregister all the event listeners
-		paddleDown:setFillColor(255,100,100)
+		paddleDown:setFillColor(1,.39215686274,.39215686274)
 		Runtime:removeEventListener("autolanPlayerDropped", playerDropped)
 		Runtime:removeEventListener("autolanPlayerJoined", addPlayer)
 		paddleDown:removeEventListener("touch", dragBodyServer) --assign bottom padle to server
@@ -103,7 +107,7 @@ end
 local function makeServer()
 	if(isClient) then --if we were a client before, we need to unregister all the event listeners
 		isClient = false
-		paddleUp:setFillColor(255,100,100)
+		paddleUp:setFillColor(1,.39215686274,.39215686274)
 		Runtime:removeEventListener("autolanReceived", clientReceived) --all incoming packets are sent to clientReceived
 		Runtime:removeEventListener("autolanConnectionFailed", connectionAttemptFailed)
 		Runtime:removeEventListener("autolanDisconnected", connectionAttemptFailed)	
@@ -113,7 +117,7 @@ local function makeServer()
 	server:startInternet()
 	isServer = true
 	menuGroup:removeSelf()
-	paddleDown:setFillColor(100,100,255)
+	paddleDown:setFillColor(.39215686274,.39215686274,1)
 	--add event listeners
 	Runtime:addEventListener("autolanPlayerDropped", playerDropped)
 	Runtime:addEventListener("autolanPlayerJoined", addPlayer)
@@ -134,36 +138,36 @@ local function spawnMenu(group)
 	local function hostPressed()
 		makeServer()
 	end
-	local title = display.newRoundedRect(group, 0, 0, screenW*.8,60,20)
-	title:setReferencePoint(display.CenterReferencePoint)
+	title = display.newRoundedRect(group, 0, 0, screenW*.8,60,20)
 	title.x,title.y = halfW, 50
-	title:setFillColor(100,100,100)
-	local titleText = display.newText(group, "Multiplayer Pong", 0, 0, native.systemFont, 24)
-	titleText:setReferencePoint(display.CenterReferencePoint)
+	title:setFillColor(.39215686274,.39215686274,.39215686274)
+	titleText = display.newText(group, "Multiplayer Pong", 0, 0, native.systemFont, 24)
 	titleText.x, titleText.y = halfW, 50
 	--host button
 	local host = display.newRoundedRect(group, 20, 100, 120,60,20)
-	host:setFillColor(100,100,100)
+	host:setFillColor(.39215686274,.39215686274,.39215686274)
 	host:addEventListener("tap", hostPressed)
-	local hostText = display.newText(group, "Host", 50, 115, native.systemFont, 24)
+	local hostText = display.newText(group, "Host", 70, 115, native.systemFont, 24)
+	host.x, host.y = hostText.x, hostText.y
 	--host button
-	local join = display.newRoundedRect(group, 160, 100, 120,60,20)
+	local join = display.newRoundedRect(group, 160, .39215686274, 120,60,20)
 	join:addEventListener("tap", joinPressed)
-	join:setFillColor(100,100,100)	
-	joinText = display.newText(group, "Join", 195, 115, native.systemFont, 24)
+	join:setFillColor(.39215686274,.39215686274,.39215686274)	
+	joinText = display.newText(group, "Join", 240, 115, native.systemFont, 24)
+	join.x, join.y = joinText.x, joinText.y
 
 
 	local function createListItem(event) --displays found servers
 		local item = display.newGroup()
-		item.background = display.newRoundedRect(item,20,0,screenW-50,60,20)
+		item.background = display.newRoundedRect(item,display.contentCenterX,0,screenW-50,60,20)
 		item.background.strokeWidth = 3
-		item.background:setFillColor(70, 70, 70)
-		item.background:setStrokeColor(180, 180, 180)
-		item.text = display.newText(item,event.serverName.."    "..event.customBroadcast, 40, 20, "Helvetica-Bold", 18 )
+		item.background:setFillColor(0.27450980392, 0.27450980392, 0.27450980392)
+		item.background:setStrokeColor(0.70588235294, 0.70588235294, 0.70588235294)
+		item.text = display.newText(item,event.serverName.."    "..event.customBroadcast, display.contentCenterX, 0, "Helvetica-Bold", 18 )
 		if(event.internet) then
-			item.text:setTextColor( 100,100,255 )
+			item.text:setFillColor( .39215686274,.39215686274,1 )
 		else
-			item.text:setTextColor( 255 )
+			item.text:setFillColor( 1 )
 		end
 		item.serverIP = event.serverIP		
 		--attach a touch listener
@@ -362,7 +366,7 @@ clientReceived = function (event)
 		print("got init packet")
 		if(message[2] == 1) then --we are the first player to join, let us take control of the ball
 			paddleUp:addEventListener("touch", dragBodyClient)
-			paddleUp:setFillColor(100,100,255)
+			paddleUp:setFillColor(.39215686274,.39215686274,1)
 			ballControl = true
 		end
 	elseif(message[1] == 2) then
